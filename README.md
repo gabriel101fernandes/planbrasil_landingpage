@@ -1,6 +1,6 @@
-# Projeto Acessiva Landing Page
+# Plan Brasil Landing Page
 
-Landing page desenvolvida com Next.js para apresentar o sistema de gerenciamento de lojas do Projeto Acessiva.
+Landing page desenvolvida com Next.js para apresentar o sistema de gerenciamento de lojas da Plan Brasil.
 
 ## O que esta p뿯½gina apresenta
 
