@@ -1,13 +1,19 @@
 :root {
-  --bg: #ffffff;
+  --bg: #fafafa;
   --surface: #ffffff;
-  --surface-dark: #000000;
-  --text: #000000;
+  --surface-dark: #050505;
+  --text: #0a0a0a;
   --text-light: #ffffff;
-  --muted: rgba(0, 0, 0, 0.7);
-  --primary: #dc910d;
-  --primary-dark: #dc910d;
-  --border: rgba(0, 0, 0, 0.2);
+  --muted: rgba(10, 10, 10, 0.68);
+  --primary: #e49a0f;
+  --primary-hover: #f0a514;
+  --border: rgba(10, 10, 10, 0.12);
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 12px 40px rgba(0, 0, 0, 0.08);
+  --shadow-elevated: 0 24px 64px rgba(0, 0, 0, 0.14);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 * {
@@ -21,6 +27,8 @@ body {
   background: var(--bg);
   color: var(--text);
   scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
@@ -28,22 +36,85 @@ a {
   text-decoration: none;
 }
 
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+.btn:focus-visible {
+  outline-offset: 2px;
+}
+
 .container {
   width: min(1120px, 92%);
   margin: 0 auto;
 }
 
-.hero {
-  background: radial-gradient(circle at 20% 20%, rgba(220, 145, 13, 0.2) 0%, #000000 55%);
-  color: var(--text-light);
-  padding: 6rem 0 5.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  position: relative;
-  overflow: hidden;
+.siteNav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(14px);
+  background: rgba(6, 6, 6, 0.78);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-main {
-  --parallax-y: 0px;
+.navLayout {
+  min-height: 4.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.navBrand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.navLogo {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.navLinks a {
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.92rem;
+  transition: color 0.25s var(--ease-out);
+}
+
+.navLinks a:hover {
+  color: var(--primary);
+}
+
+.navCta {
+  padding: 0.55rem 0.95rem;
+  font-size: 0.88rem;
+}
+
+.hero {
+  --hero-glow: rgba(228, 154, 15, 0.45);
+  background:
+    radial-gradient(ellipse 120% 80% at 78% 8%, rgba(228, 154, 15, 0.22) 0%, transparent 52%),
+    radial-gradient(ellipse 90% 70% at 12% 88%, rgba(255, 255, 255, 0.06) 0%, transparent 45%),
+    linear-gradient(165deg, #0c0c0c 0%, #030303 48%, #080808 100%);
+  color: var(--text-light);
+  padding: clamp(3.85rem, 8.4vw, 5rem) 0 clamp(4rem, 8vw, 5.75rem);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: clip;
 }
 
 .hero::before,
@@ -72,82 +143,120 @@ main {
   animation: floatGlow 10s ease-in-out infinite reverse;
 }
 
+.heroGrid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 85% 70% at 70% 40%, #000 20%, transparent 72%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .heroLayout {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 2rem;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(2rem, 5vw, 3.5rem);
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .heroContent {
   position: relative;
   z-index: 2;
+  max-width: 36rem;
 }
 
-.heroPanels {
+.heroBrand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.35rem;
+}
+
+.heroLogoWrap {
+  display: block;
+  width: clamp(3.25rem, 7vw, 4.25rem);
+  height: clamp(3.25rem, 7vw, 4.25rem);
+  flex-shrink: 0;
+}
+
+.heroLogo {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  filter: brightness(0) invert(1) drop-shadow(0 8px 24px rgba(0, 0, 0, 0.45));
+}
+
+.heroBrandText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.heroBrandName {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.heroBrandTag {
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.heroVisual {
   position: relative;
-  min-height: 360px;
-  transform: translateY(calc(var(--parallax-y) * -0.25));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(calc(var(--hero-parallax, 0px) * -0.35));
+  transition: transform 0.15s var(--ease-out);
 }
 
-.mockupShowcase {
-  display: grid;
-  grid-template-columns: 0.68fr 1fr;
-  gap: 0.9rem;
-  align-items: end;
-}
-
-.mockupCard {
-
-}
-
-.mockupCard:hover {
-  transform: translateY(-7px);
-  border-color: rgba(220, 145, 13, 0.65);
-  box-shadow: 0 26px 50px rgba(0, 0, 0, 0.38);
+.mockupStage {
+  position: static;
+  width: min(100%, 380px);
+  aspect-ratio: 1;
 }
 
 .mockupImage {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
-}
-
-.phoneImage {
-  max-height: 280px;
   object-fit: contain;
-}
-
-.laptopImage {
-  max-height: 240px;
-  object-fit: contain;
+  object-position: center center;
 }
 
 .platformNote {
-  margin-top: 0.85rem;
+  margin-top: 1.35rem;
   margin-bottom: 0;
-  font-size: 0.92rem;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.84);
-}
-
-.badge {
-  display: inline-block;
-  padding: 0.35rem 0.8rem;
-  border-radius: 999px;
-  background: rgba(220, 145, 13, 0.14);
-  color: #ffffff;
-  border: 1px solid rgba(220, 145, 13, 0.35);
-  font-size: 0.85rem;
-  margin-bottom: 1rem;
-  letter-spacing: 0.04em;
+  max-width: 22rem;
+  text-align: center;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.62);
+  letter-spacing: 0.01em;
 }
 
 h1 {
-  font-size: clamp(2rem, 4vw, 3rem);
-  line-height: 1.2;
+  font-size: clamp(2.05rem, 4.2vw, 3.15rem);
+  line-height: 1.14;
   margin: 0;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.028em;
+  font-weight: 800;
+  text-wrap: balance;
 }
 
 h2 {
@@ -165,9 +274,11 @@ p {
 }
 
 .hero p {
-  max-width: 760px;
-  margin-top: 1rem;
-  color: rgba(255, 255, 255, 0.86);
+  max-width: 34rem;
+  margin-top: 1.15rem;
+  font-size: clamp(1rem, 1.9vw, 1.08rem);
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .heroActions {
@@ -191,229 +302,340 @@ p {
 
 .btnPrimary {
   background: var(--primary);
-  color: #000000;
-  box-shadow: 0 10px 24px rgba(220, 145, 13, 0.3);
+  color: #0a0a0a;
+  box-shadow: 0 10px 28px rgba(228, 154, 15, 0.35);
 }
 
 .btnPrimary:hover {
-  background: var(--primary-dark);
+  background: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(220, 145, 13, 0.42);
+  box-shadow: 0 16px 36px rgba(228, 154, 15, 0.45);
 }
 
 .btnGhost {
-  border-color: rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .btnGhost:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
   transform: translateY(-2px);
 }
 
 .section {
-  padding: 4rem 0;
-  background: #ffffff;
-  color: #000000;
+  padding: clamp(3.5rem, 8vw, 5rem) 0;
+  background: var(--surface);
+  color: var(--text);
   position: relative;
+  scroll-margin-top: 6rem;
 }
 
-.sectionCarousel {
-  background: linear-gradient(180deg, #ffffff 0%, #f7f7f7 100%);
+.sectionEyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin: 0 0 0.5rem;
 }
 
-.carouselHeader {
+.sectionLead {
+  margin: 0.65rem 0 0;
+  max-width: 40rem;
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.55;
+}
+
+.sectionFeaturesCarousel {
+  background: linear-gradient(180deg, #ffffff 0%, #f4f4f4 55%, #fafafa 100%);
+  border-bottom: 1px solid var(--border);
+}
+
+.featuresCarouselTop {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 1.25rem;
+  flex-wrap: wrap;
 }
 
-.carouselControls {
+.featuresCarouselIntro {
+  flex: 1;
+  min-width: min(100%, 280px);
+}
+
+.featuresCarouselControls {
   display: flex;
   gap: 0.6rem;
+  flex-shrink: 0;
 }
 
 .carouselBtn {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  background: #fff;
+  border: 1px solid var(--border);
+  background: var(--surface);
   cursor: pointer;
   font-size: 1.1rem;
-  transition: all 0.25s ease;
+  color: var(--text);
+  transition: background 0.25s var(--ease-out), border-color 0.25s var(--ease-out),
+    transform 0.25s var(--ease-out);
 }
 
 .carouselBtn:hover {
-  background: #dc910d;
-  border-color: #dc910d;
+  background: rgba(228, 154, 15, 0.18);
+  border-color: rgba(228, 154, 15, 0.55);
   transform: translateY(-2px);
 }
 
-.carousel {
+.featuresCarouselViewport {
+  margin-top: 1.75rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm), 0 20px 48px rgba(0, 0, 0, 0.06);
+  padding: clamp(1rem, 3vw, 1.35rem);
   overflow: hidden;
-  border-radius: 18px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.08);
-  margin-top: 1.1rem;
 }
 
-.carouselTrack {
-  display: flex;
-  transition: transform 0.5s ease;
+.featuresCarouselRow {
+  display: grid;
+  gap: 1rem;
+  animation: featurePeekIn 0.45s var(--ease-out) both;
 }
 
-.carouselSlide {
-  min-width: 100%;
-  padding: 2rem;
-  background: #fff;
+.featuresCarouselRow[data-count="1"] {
+  grid-template-columns: 1fr;
 }
 
-.carouselSlide h3 {
-  font-size: clamp(1.25rem, 2vw, 1.7rem);
+.featuresCarouselRow[data-count="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.carouselSlide p {
-  max-width: 700px;
-  color: rgba(0, 0, 0, 0.76);
+.featuresCarouselRow[data-count="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.slideTag {
-  display: inline-block;
-  font-size: 0.8rem;
-  margin-bottom: 0.8rem;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  color: #000;
-  background: rgba(220, 145, 13, 0.23);
-  border: 1px solid rgba(220, 145, 13, 0.4);
+.featurePeekCard {
+  position: relative;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  padding: 1.25rem 1.3rem 1.3rem;
+  background: linear-gradient(165deg, #ffffff 0%, #fafafa 100%);
+  min-height: 11rem;
+  transition: border-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
 }
 
-.carouselDots {
+.featurePeekCard:hover {
+  border-color: rgba(228, 154, 15, 0.45);
+  box-shadow: var(--shadow-md);
+}
+
+.featurePeekAccent {
+  position: absolute;
+  top: 0;
+  left: 1.25rem;
+  right: 1.25rem;
+  height: 3px;
+  border-radius: 0 0 4px 4px;
+  background: linear-gradient(90deg, var(--primary), rgba(228, 154, 15, 0.35));
+  opacity: 0.9;
+}
+
+.featurePeekCard h3 {
+  margin-top: 0.5rem;
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  line-height: 1.25;
+}
+
+.featurePeekCard p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.featuresCarouselDots {
   display: flex;
   justify-content: center;
-  gap: 0.55rem;
-  margin-top: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.15rem;
 }
 
 .dot {
-  width: 11px;
-  height: 11px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   border: none;
-  background: rgba(0, 0, 0, 0.25);
+  padding: 0;
+  background: rgba(10, 10, 10, 0.2);
   cursor: pointer;
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: transform 0.2s var(--ease-out), background 0.2s var(--ease-out), width 0.2s var(--ease-out);
 }
 
 .dot.isActive {
-  background: #dc910d;
-  transform: scale(1.15);
+  background: var(--primary);
+  transform: scale(1.12);
+  width: 22px;
+  border-radius: 999px;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
+.sectionFeatureCatalog {
+  background: var(--surface);
 }
 
-.card {
-  background: #ffffff;
+.featureCatalog {
+  list-style: none;
+  margin: 1.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 1.3rem;
-  color: #000000;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.05);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-  animation: fadeSlideUp 0.55s ease both;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
-.card p {
-  color: var(--muted);
+.featureCatalogItem {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.15rem 1.35rem;
+  padding: 1.25rem 1.35rem;
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+  transition: background 0.25s var(--ease-out);
+}
+
+.featureCatalogItem:last-child {
+  border-bottom: none;
+}
+
+.featureCatalogItem:hover {
+  background: rgba(228, 154, 15, 0.06);
+}
+
+.featureCatalogIndex {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: rgba(228, 154, 15, 0.85);
+  font-variant-numeric: tabular-nums;
+  padding-top: 0.15rem;
+}
+
+.featureCatalogBody h3 {
+  margin: 0 0 0.45rem;
+  font-size: 1.08rem;
+}
+
+.featureCatalogBody p {
   margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.58;
 }
 
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.12);
-  border-color: rgba(220, 145, 13, 0.55);
+.featureAccordion {
+  list-style: none;
+  margin: 1.75rem 0 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
-.grid .card:nth-child(2) {
-  animation-delay: 0.05s;
+.featureAccordionItem {
+  border-bottom: 1px solid var(--border);
 }
 
-.grid .card:nth-child(3) {
-  animation-delay: 0.1s;
+.featureAccordionItem:last-child {
+  border-bottom: none;
 }
 
-.grid .card:nth-child(4) {
-  animation-delay: 0.15s;
+.featureAccordion details {
+  background: #fff;
 }
 
-.grid .card:nth-child(5) {
-  animation-delay: 0.2s;
+.featureAccordion summary {
+  list-style: none;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
 }
 
-.grid .card:nth-child(6) {
-  animation-delay: 0.25s;
+.featureAccordion summary::-webkit-details-marker {
+  display: none;
 }
 
-.grid .card:nth-child(7) {
-  animation-delay: 0.3s;
+.featureAccordionIndex {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.featureAccordionTitle {
+  font-size: 1.03rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.featureAccordionIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-weight: 600;
+  transition: transform 0.25s var(--ease-out), color 0.25s var(--ease-out);
+}
+
+.featureAccordion details[open] .featureAccordionIcon {
+  transform: rotate(45deg);
+  color: var(--primary);
+}
+
+.featureAccordion details p {
+  margin: 0;
+  padding: 0 1.25rem 1.1rem 3.5rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+@keyframes featurePeekIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .sectionDark {
-  background: #000000;
+  background: linear-gradient(180deg, #050505 0%, #0a0a0a 100%);
   color: var(--text-light);
-  border-top: 1px solid rgba(220, 145, 13, 0.45);
-  border-bottom: 1px solid rgba(220, 145, 13, 0.45);
+  border-top: 1px solid rgba(228, 154, 15, 0.35);
+  border-bottom: 1px solid rgba(228, 154, 15, 0.25);
 }
 
 .twoColumns {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
   gap: 2rem;
-}
-
-.highlights {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.highlightCard {
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 14px;
-  padding: 1.2rem;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-  animation: fadeSlideUp 0.55s ease both;
-}
-
-.highlightCard h3 {
-  color: #000000;
-}
-
-.highlightCard p {
-  color: rgba(0, 0, 0, 0.72);
-  margin: 0;
-}
-
-.highlights .highlightCard:nth-child(2) {
-  animation-delay: 0.08s;
-}
-
-.highlights .highlightCard:nth-child(3) {
-  animation-delay: 0.16s;
-}
-
-.highlightCard:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.12);
-  border-color: rgba(220, 145, 13, 0.55);
 }
 
 .benefits {
@@ -439,23 +661,22 @@ p {
 
 .cta {
   text-align: center;
+  background: radial-gradient(ellipse 80% 120% at 50% 0%, rgba(228, 154, 15, 0.18) 0%, #050505 55%);
+  color: var(--text-light);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cta h2 {
+  color: var(--text-light);
+  max-width: 20ch;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .cta p {
   max-width: 700px;
   margin: 0.7rem auto 1.5rem;
-  color: rgba(255, 255, 255, 0.75);
-}
-
-@keyframes fadeSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  color: rgba(255, 255, 255, 0.72);
 }
 
 @keyframes floatGlow {
@@ -489,26 +710,48 @@ p {
 }
 
 @media (max-width: 900px) {
+  .navLayout {
+    min-height: 4rem;
+  }
+
+  .navLinks {
+    display: none;
+  }
+
+  .navCta {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.82rem;
+  }
+
   .heroLayout {
     grid-template-columns: 1fr;
+    text-align: center;
   }
 
-  .heroPanels {
-    min-height: auto;
-    margin-top: 0.8rem;
+  .heroContent {
+    margin-inline: auto;
+    max-width: 40rem;
+  }
+
+  .heroBrand {
+    justify-content: center;
+  }
+
+  .heroVisual {
     transform: none;
+    margin-top: 0.5rem;
   }
 
-  .mockupShowcase {
-    grid-template-columns: 1fr 1fr;
+  .platformNote {
+    margin-inline: auto;
   }
 
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .hero p {
+    margin-inline: auto;
   }
 
-  .highlights {
-    grid-template-columns: 1fr;
+  .heroActions {
+    justify-content: center;
   }
 
   .twoColumns {
@@ -518,49 +761,68 @@ p {
 
 @media (max-width: 640px) {
   .hero {
-    padding: 4rem 0 3.5rem;
+    padding: 3.75rem 0 3.25rem;
   }
 
-  .heroPanels {
-    min-height: auto;
+  .mockupStage {
+    width: min(100%, 300px);
   }
 
-  .mockupShowcase {
+  .featureAccordion summary {
+    padding: 0.9rem 1rem;
+  }
+
+  .featureAccordion details p {
+    padding: 0 1rem 1rem 2.85rem;
+  }
+}
+
+.siteFooter {
+  background: #050505;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.82);
+  padding: 2.25rem 0 2.6rem;
+}
+
+.footerLayout {
+  display: grid;
+  grid-template-columns: 1.2fr auto auto;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.footerBrand {
+  margin: 0;
+  color: #fff;
+  font-weight: 700;
+}
+
+.footerCopy {
+  margin: 0.4rem 0 0;
+  max-width: 38ch;
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.footerLinks {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.footerLinks a {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+}
+
+.footerMail {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .footerLayout {
     grid-template-columns: 1fr;
+    gap: 0.9rem;
   }
-
-  .phoneImage,
-  .laptopImage {
-    max-height: 220px;
-  }
-
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .carouselSlide {
-    padding: 1.4rem;
-  }
-}
-
-/* O container que dita o tamanho final */
-.heroPanels {
-  position: relative;
-  width: 100%;    /* Ou o valor que você já definiu */
-  height: 500px;  /* Altura necessária para o fill funcionar */
-  overflow: hidden;
-}
-
-/* Deixe os containers intermediários ocuparem 100% do pai */
-.mockupShowcase, 
-.mockupCard {
-  width: 100%;
-  height: 100%;
-  display: block; /* Garante que não haja espaços de linha de texto */
-  position: static; /* Importante: garante que a imagem não use esses caras como referência */
-}
-
-/* A imagem vai preencher o .heroPanels agora */
-.mockupImage {
-  object-fit: cover; /* Faz a imagem cobrir tudo sem deformar */
 }

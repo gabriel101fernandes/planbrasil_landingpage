@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useState } from "react";
+/* eslint-disable @next/next/no-img-element -- hero: logo SVG e mockup PNG carregam de forma confiável só com <img> */
+import { useCallback, useEffect, useState } from "react";
 
 const features = [
   {
@@ -48,52 +48,121 @@ const benefits = [
   "Escalável para uma loja ou múltiplas unidades"
 ];
 
-const slides = [
-  {
-    title: "PDV de alta performance para picos de venda",
-    description:
-      "Registre vendas em poucos toques, emita cupom não fiscal e acompanhe cada operador com rastreabilidade completa."
-  },
-  {
-    title: "Estoque dinâmico e inteligência de reposição",
-    description:
-      "Atualizações em tempo real com alertas automáticos de ruptura, histórico de movimentações e visão por produto ou categoria."
-  },
-  {
-    title: "Gestão financeira e relatórios estratégicos",
-    description:
-      "Monitore fluxo de caixa, ticket médio, produtos campeões e horários mais lucrativos para crescer com previsibilidade."
-  }
+const navLinks = [
+  { href: "#funcionalidades", label: "Funcionalidades" },
+  { href: "#catalogo-funcionalidades", label: "Módulos" },
+  { href: "#vantagens", label: "Vantagens" },
+  { href: "#contato", label: "Contato" }
 ];
 
+function useItemsPerView() {
+  const [n, setN] = useState(3);
+
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      if (w < 640) setN(1);
+      else if (w < 960) setN(2);
+      else setN(3);
+    };
+    update();
+    window.addEventListener("resize", update, { passive: true });
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  return n;
+}
+
 export default function Home() {
-  const [activeSlide, setActiveSlide] = useState(0);
   const [parallaxY, setParallaxY] = useState(0);
+  const [featureStart, setFeatureStart] = useState(0);
+  const itemsPerView = useItemsPerView();
+  const maxStart = Math.max(0, features.length - itemsPerView);
 
   useEffect(() => {
-    const onScroll = () => setParallaxY(window.scrollY * 0.18);
+    setFeatureStart((s) => Math.min(s, maxStart));
+  }, [maxStart]);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onScroll = () => {
+      if (mq.matches) {
+        setParallaxY(0);
+        return;
+      }
+      setParallaxY(window.scrollY * 0.12);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
+    mq.addEventListener("change", onScroll);
     onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      mq.removeEventListener("change", onScroll);
+    };
   }, []);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % slides.length);
-    }, 4200);
-    return () => clearInterval(timer);
-  }, []);
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mq.matches || maxStart <= 0) return undefined;
+    const id = window.setInterval(() => {
+      setFeatureStart((prev) => (prev >= maxStart ? 0 : prev + 1));
+    }, 6500);
+    return () => window.clearInterval(id);
+  }, [maxStart]);
 
-  const nextSlide = () => setActiveSlide((prev) => (prev + 1) % slides.length);
-  const previousSlide = () =>
-    setActiveSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  const nextFeatures = useCallback(() => {
+    setFeatureStart((prev) => (prev >= maxStart ? 0 : prev + 1));
+  }, [maxStart]);
+
+  const prevFeatures = useCallback(() => {
+    setFeatureStart((prev) => (prev <= 0 ? maxStart : prev - 1));
+  }, [maxStart]);
+
+  const visibleFeatures = features.slice(featureStart, featureStart + itemsPerView);
+  const dotCount = maxStart + 1;
 
   return (
-    <main style={{ "--parallax-y": `${parallaxY}px` }}>
-      <header className="hero">
+    <main>
+      <nav className="siteNav" aria-label="Navegação principal">
+        <div className="container navLayout">
+          <a href="#topo" className="navBrand">
+            <img src="/images/logo.svg" alt="Plan Brasil" className="navLogo" width={80} height={80} />
+            <span>Plan Brasil</span>
+          </a>
+          <div className="navLinks">
+            {navLinks.map((link) => (
+              <a key={link.href} href={link.href}>
+                {link.label}
+              </a>
+            ))}
+          </div>
+          <a href="mailto:planbrasilweb@gmail.com" className="btn btnPrimary navCta">
+            Agendar demonstração
+          </a>
+        </div>
+      </nav>
+
+      <header className="hero" id="topo">
+        <div className="heroGrid" aria-hidden="true" />
         <div className="container heroLayout">
           <div className="heroContent">
-            <span className="badge">Plan Brasil</span>
+            <div className="heroBrand">
+              <span className="heroLogoWrap">
+                <img
+                  src="/images/logo.svg"
+                  alt="Plan Brasil"
+                  className="heroLogo"
+                  width={200}
+                  height={200}
+                  decoding="async"
+                  fetchPriority="high"
+                />
+              </span>
+              <div className="heroBrandText">
+                <span className="heroBrandName">Plan Brasil</span>
+                <span className="heroBrandTag">PDV · estoque · financeiro</span>
+              </div>
+            </div>
             <h1>A plataforma de última geração para operar e expandir sua loja.</h1>
             <p>
               O Plan Brasil une PDV, cupom não fiscal, estoque dinâmico, fluxo de caixa,
@@ -108,122 +177,107 @@ export default function Home() {
               </a>
             </div>
           </div>
-          <div className="heroPanels">
-            <div className="mockupShowcase">
-              <div className="mockupCard">
-                <Image
-                  src="/images/mockup.png"
-                  alt="Mockup do Plan Brasil em celular"
-                  fill
-                  className="mockupImage phoneImage"
-                  priority
-                  sizes="(max-width: 768px) 100vw, 50vw" // Ajuda na performance
-                  style={{ objectFit: 'cover' }} // Ou 'contain', dependendo do seu design
-                />
-              </div>
+          <div className="heroVisual" style={{ "--hero-parallax": `${parallaxY}px` }}>
+            <div className="mockupStage">
+              <img
+                src="/images/mockup.PNG"
+                alt="Interface do Plan Brasil em dispositivo móvel"
+                className="mockupImage"
+                width={1080}
+                height={1080}
+                decoding="async"
+                fetchPriority="high"
+              />
             </div>
             <p className="platformNote">
-              O Plan Brasil roda com excelência em diferentes plataformas: desktop, notebook e
-              dispositivos móveis.
+              Excelência em desktop, notebook e dispositivos móveis — mesma operação, onde você
+              estiver.
             </p>
           </div>
         </div>
       </header>
 
-      <section className="section" id="funcionalidades">
+      <section className="section sectionFeaturesCarousel" id="funcionalidades">
         <div className="container">
-          <h2>Tecnologia completa para uma operação inteligente</h2>
-          <div className="grid">
-            {features.map((feature) => (
-              <article key={feature.title} className="card">
-                <h3>{feature.title}</h3>
-                <p>{feature.description}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section sectionCarousel">
-        <div className="container">
-          <div className="carouselHeader">
-            <h2>Experiência premium para gestão e vendas</h2>
-            <div className="carouselControls">
-              <button
-                type="button"
-                className="carouselBtn"
-                onClick={previousSlide}
-                aria-label="Slide anterior"
-              >
+          <div className="featuresCarouselTop">
+            <div className="featuresCarouselIntro">
+              <p className="sectionEyebrow">Funcionalidades</p>
+              <h2>Pontos estratégicos em foco</h2>
+              <p className="sectionLead">
+                Navegue pelos pilares do produto — até três por vez, com o detalhamento completo na
+                seção seguinte.
+              </p>
+            </div>
+            <div className="featuresCarouselControls" role="group" aria-label="Controles do carrossel">
+              <button type="button" className="carouselBtn" onClick={prevFeatures} aria-label="Itens anteriores">
                 ←
               </button>
-              <button
-                type="button"
-                className="carouselBtn"
-                onClick={nextSlide}
-                aria-label="Próximo slide"
-              >
+              <button type="button" className="carouselBtn" onClick={nextFeatures} aria-label="Próximos itens">
                 →
               </button>
             </div>
           </div>
 
-          <div className="carousel">
-            <div className="carouselTrack" style={{ transform: `translateX(-${activeSlide * 100}%)` }}>
-              {slides.map((slide) => (
-                <article key={slide.title} className="carouselSlide">
-                  <span className="slideTag">Plan Brasil Performance</span>
-                  <h3>{slide.title}</h3>
-                  <p>{slide.description}</p>
+          <div className="featuresCarouselViewport">
+            <div
+              key={featureStart}
+              className="featuresCarouselRow"
+              data-count={visibleFeatures.length}
+            >
+              {visibleFeatures.map((feature) => (
+                <article key={feature.title} className="featurePeekCard">
+                  <span className="featurePeekAccent" aria-hidden="true" />
+                  <h3>{feature.title}</h3>
+                  <p>{feature.description}</p>
                 </article>
               ))}
             </div>
           </div>
 
-          <div className="carouselDots">
-            {slides.map((slide, index) => (
+          <div className="featuresCarouselDots" role="tablist" aria-label="Posição no carrossel">
+            {Array.from({ length: dotCount }, (_, i) => (
               <button
-                key={slide.title}
+                key={i}
                 type="button"
-                className={`dot ${activeSlide === index ? "isActive" : ""}`}
-                onClick={() => setActiveSlide(index)}
-                aria-label={`Ir para slide ${index + 1}`}
+                role="tab"
+                aria-selected={featureStart === i}
+                aria-label={`Grupo ${i + 1} de ${dotCount}`}
+                className={`dot ${featureStart === i ? "isActive" : ""}`}
+                onClick={() => setFeatureStart(i)}
               />
             ))}
           </div>
         </div>
       </section>
 
-      <section className="section">
+      <section className="section sectionFeatureCatalog" aria-labelledby="catalogo-funcionalidades">
         <div className="container">
-          <h2>Mais controle no caixa, estoque e financeiro</h2>
-          <div className="highlights">
-            <article className="highlightCard">
-              <h3>Cupom não fiscal com impressão imediata</h3>
-              <p>
-                Finalize vendas com agilidade e entregue comprovantes claros para o cliente, com
-                todos os itens e total da compra.
-              </p>
-            </article>
-            <article className="highlightCard">
-              <h3>Estoque dinâmico em tempo real</h3>
-              <p>
-                Cada venda atualiza automaticamente o estoque. Receba alertas de itens críticos e
-                evite perda de venda por falta de produto.
-              </p>
-            </article>
-            <article className="highlightCard">
-              <h3>Relatórios para decisão de crescimento</h3>
-              <p>
-                Descubra o que mais vende, quais horários performam melhor e onde estão os gargalos
-                da operação para crescer com previsibilidade.
-              </p>
-            </article>
-          </div>
+          <h2 id="catalogo-funcionalidades">Tudo o que o Plan Brasil cobre</h2>
+          <p className="sectionLead">
+            Expanda cada item para visualizar detalhes de cada ponto estratégico do produto.
+          </p>
+          <ol className="featureAccordion">
+            {features.map((feature, index) => (
+              <li key={feature.title} className="featureAccordionItem">
+                <details open={index === 0}>
+                  <summary>
+                    <span className="featureAccordionIndex" aria-hidden="true">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="featureAccordionTitle">{feature.title}</span>
+                    <span className="featureAccordionIcon" aria-hidden="true">
+                      +
+                    </span>
+                  </summary>
+                  <p>{feature.description}</p>
+                </details>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
-      <section className="section sectionDark">
+      <section className="section sectionDark" id="vantagens">
         <div className="container twoColumns">
           <div>
             <h2>Por que escolher o Plan Brasil?</h2>
@@ -247,11 +301,30 @@ export default function Home() {
             Fale com a equipe do Plan Brasil e descubra como implementar uma operação mais
             eficiente.
           </p>
-          <a href="mailto:contato@planbrasil.com" className="btn btnPrimary">
+          <a href="mailto:planbrasilweb@gmail.com" className="btn btnPrimary">
             Entrar em contato
           </a>
         </div>
       </section>
+
+      <footer className="siteFooter">
+        <div className="container footerLayout">
+          <div>
+            <p className="footerBrand">Plan Brasil</p>
+            <p className="footerCopy">Plataforma inteligente para operação de loja com foco em escala.</p>
+          </div>
+          <div className="footerLinks">
+            {navLinks.map((link) => (
+              <a key={link.href} href={link.href}>
+                {link.label}
+              </a>
+            ))}
+          </div>
+          <a href="mailto:planbrasilweb@gmail.com" className="footerMail">
+            planbrasilweb@gmail.com
+          </a>
+        </div>
+      </footer>
     </main>
   );
 }
