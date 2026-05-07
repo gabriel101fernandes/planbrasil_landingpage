@@ -7,9 +7,9 @@ const manrope = Manrope({
 });
 
 export const metadata = {
-  title: "Plan Brasil | Plataforma de Gestão para Lojas",
+  title: "Plan Brasil | Gestão da loja no celular, tablet ou PC",
   description:
-    "Plan Brasil é a plataforma completa para lojas com PDV, cupom não fiscal, estoque dinâmico, relatórios, fluxo de caixa e entregas."
+    "Sistema simples para PDV, estoque e notas fiscais (NF-e pelo XML da Fazenda). Funciona no navegador no celular, tablet ou computador — mesma conta na nuvem."
 };
 
 export default function RootLayout({ children }) {

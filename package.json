@@ -3,12 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "clean": "node -e \"const fs=require('fs');try{fs.rmSync('.next',{recursive:true,force:true});console.log('OK: pasta .next removida');}catch(e){if(e.code!=='ENOENT')throw e;}\"",
     "dev": "next dev",
+    "dev:fresh": "npm run clean && next dev",
     "build": "next build",
-    "start": "next start",
+    "build:fresh": "npm run clean && npm run build",
+    "start": "npx --yes serve@14 out -p 3000",
     "lint": "next lint"
   },
   "dependencies": {
+    "framer-motion": "^11.18.2",
     "next": "^15.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
