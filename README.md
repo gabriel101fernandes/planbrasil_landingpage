@@ -1,20 +1,20 @@
-# Projeto Acessiva Landing Page
+# Plan Brasil Landing Page
 
-Landing page desenvolvida com Next.js para apresentar o sistema de gerenciamento de lojas do Projeto Acessiva.
+Landing page desenvolvida com Next.js para apresentar o sistema de gerenciamento de lojas da Plan Brasil.
 
-## O que esta p뿯½gina apresenta
+## O que esta página apresenta
 
 - Operador de Caixa (PDV)
-- Relat뿯½rios inteligentes
+- Relatórios inteligentes
 - Controle de estoque
 - Fluxo de caixa
 - Sistema de entregas
-- Benef뿯½cios para a opera뿯½뿯½o da loja
+- Benefícios para a operação da loja
 
 ## Rodando localmente
 
-1. Instale o Node.js (versao LTS recomendada)
-2. Instale as depend뿯½ncias:
+1. Instale o Node.js (versão LTS recomendada)
+2. Instale as dependências:
 
 ```bash
 npm install
@@ -31,12 +31,12 @@ npm run dev
 ## Estrutura principal
 
 - `app/layout.js`: layout base e metadados
-- `app/page.js`: conte뿯½do principal da landing
+- `app/page.js`: conteúdo principal da landing
 - `app/globals.css`: estilos globais
 
-## Build de produ뿯½뿯½o
+## Build de produção
 
 ```bash
 npm run build
 npm run start
-```਍
+```
