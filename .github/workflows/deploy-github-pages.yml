@@ -17,6 +17,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Precisa do mesmo environment onde está CUSTOM_GITHUB_PAGES_DOMAIN — senão `vars.*`
+    # do ambiente não existe neste job (só existiam no deploy) e o build usa BASE_PATH errado.
+    environment: github-pages
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,8 +28,8 @@ jobs:
           cache: npm
       - run: npm ci
       # Domínio próprio em Pages = site na raiz (/). Aí não pode usar basePath /nome-do-repo.
-      # Defina a repository variable CUSTOM_GITHUB_PAGES_DOMAIN=true em:
-      # Settings → Secrets and variables → Actions → Variables
+      # Variável pode estar em: Repo → Settings → Secrets and variables → Actions → Variables,
+      # ou na environment "github-pages" (neste caso o job build também deve usar environment: github-pages).
       - name: Static export
         env:
           REPO_NAME: ${{ github.event.repository.name }}
