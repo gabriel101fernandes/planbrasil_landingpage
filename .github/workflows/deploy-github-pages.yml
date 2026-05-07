@@ -24,10 +24,22 @@ jobs:
           node-version: "20"
           cache: npm
       - run: npm ci
-      - name: Static export (basePath = nome do repositório)
+      # Domínio próprio em Pages = site na raiz (/). Aí não pode usar basePath /nome-do-repo.
+      # Defina a repository variable CUSTOM_GITHUB_PAGES_DOMAIN=true em:
+      # Settings → Secrets and variables → Actions → Variables
+      - name: Static export
         env:
-          BASE_PATH: /${{ github.event.repository.name }}
-        run: npm run build
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: |
+          set -e
+          if [ "${{ vars.CUSTOM_GITHUB_PAGES_DOMAIN }}" = "true" ]; then
+            echo "Build para domínio próprio (BASE_PATH vazio)"
+            npm run build
+          else
+            export BASE_PATH="/${REPO_NAME}"
+            echo "Build para https://${GITHUB_REPOSITORY_OWNER}.github.io/${REPO_NAME}"
+            npm run build
+          fi
       - uses: actions/upload-pages-artifact@v3
         with:
           path: out
