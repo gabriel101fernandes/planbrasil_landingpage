@@ -32,8 +32,9 @@ jobs:
           REPO_NAME: ${{ github.event.repository.name }}
         run: |
           set -e
-          if [ "${{ vars.CUSTOM_GITHUB_PAGES_DOMAIN }}" = "true" ]; then
-            echo "Build para domínio próprio (BASE_PATH vazio)"
+          FLAG="$(echo "${{ vars.CUSTOM_GITHUB_PAGES_DOMAIN }}" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')"
+          if [ "$FLAG" = "true" ] || [ "$FLAG" = "1" ] || [ "$FLAG" = "yes" ]; then
+            echo "Build para domínio próprio (BASE_PATH vazio — URLs /_next/..., /images/...)"
             npm run build
           else
             export BASE_PATH="/${REPO_NAME}"
