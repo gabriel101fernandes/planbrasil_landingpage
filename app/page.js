@@ -16,6 +16,14 @@ import {
   Reveal
 } from "@/app/components/LandingMotion.js";
 
+/** Prefixo público (GitHub Pages em subpasta). Em dev costuma ser string vazia. */
+const PUBLIC_BASE = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
+function publicAsset(path) {
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  return PUBLIC_BASE ? `${PUBLIC_BASE}${normalized}` : normalized;
+}
+
 const CONTACT_EMAIL = "planbrasilweb@gmail.com";
 const CONTACT_MAILTO = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Demonstração — Plan Brasil")}`;
 
@@ -446,7 +454,7 @@ export default function Home() {
       >
         <div className="container navLayout">
           <a href="#topo" className="navBrand">
-            <img src="/images/logo.svg" alt="Plan Brasil" className="navLogo" width={80} height={80} />
+            <img src={publicAsset("/images/logo.svg")} alt="Plan Brasil" className="navLogo" width={80} height={80} />
             <span>Plan Brasil</span>
           </a>
           <div className="navLinks">
@@ -478,7 +486,7 @@ export default function Home() {
               <HeroBlock className="heroBrand">
                 <span className="heroLogoWrap">
                   <img
-                    src="/images/logo.svg"
+                    src={publicAsset("/images/logo.svg")}
                     alt="Plan Brasil"
                     className="heroLogo"
                     width={200}
@@ -545,7 +553,7 @@ export default function Home() {
                 : {})}
             >
               <img
-                src="/images/mockup.PNG"
+                src={publicAsset("/images/mockup.PNG")}
                 alt="Interface do Plan Brasil em dispositivo móvel"
                 className="mockupImage"
                 width={1080}

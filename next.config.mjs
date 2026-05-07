@@ -11,6 +11,9 @@ const basePath = normalizeBasePath(process.env.BASE_PATH);
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   ...(basePath ? { basePath } : {}),
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath
+  },
   reactStrictMode: true,
   output: "export",
   images: {
